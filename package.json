@@ -23,6 +23,8 @@
   "dependencies": {
     "express": "^4.17.1",
     "express-fileupload": "^1.2.0",
+    "ffmpeg": "0.0.4",
+    "node-cmd": "^4.0.0",
     "react-audio-player": "^0.14.0"
   },
   "devDependencies": {
