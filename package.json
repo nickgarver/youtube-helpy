@@ -22,7 +22,8 @@
   "homepage": "https://github.com/nickgarver/youtube-helpy#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "express-fileupload": "^1.2.0"
+    "express-fileupload": "^1.2.0",
+    "react-audio-player": "^0.14.0"
   },
   "devDependencies": {
     "concurrently": "^5.3.0",
