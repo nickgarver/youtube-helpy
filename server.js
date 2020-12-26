@@ -1,17 +1,16 @@
 const express = require('express');
 const fileUpload = require('express-fileupload');
-var cmd=require('node-cmd');
+var cmd = require('node-cmd');
 const app = express();
 
 app.use(fileUpload());
 
-const Youtube = require("youtube-api")
-    , fs = require("fs")
-    , readJson = require("r-json")
-    , Logger = require("bug-killer")
-    , opn = require("opn")
-    , prettyBytes = require("pretty-bytes")
-    ;
+const Youtube = require("youtube-api"),
+  fs = require("fs"),
+  readJson = require("r-json"),
+  Logger = require("bug-killer"),
+  opn = require("opn"),
+  prettyBytes = require("pretty-bytes");
 
 // I downloaded the file from OAuth2 -> Download JSON
 const CREDENTIALS = readJson(`${__dirname}/client_secret.json`);
@@ -20,9 +19,11 @@ const CREDENTIALS = readJson(`${__dirname}/client_secret.json`);
 app.post('/upload', (req, res) => {
   var aFilePath = "";
   var pFilePath = `${__dirname}/client/public/thumbnails/zack.jpg`;
-  var oFilePath = `${__dirname}/client/public/uploads/out.mp4`;
+  var myVideo = `${__dirname}/client/public/uploads/out.mp4`;
   if (req.files === null) {
-    return res.status(400).json({ msg: 'No file uploaded' });
+    return res.status(400).json({
+      msg: 'No file uploaded'
+    });
   }
 
   const file = req.files.file;
@@ -32,95 +33,84 @@ app.post('/upload', (req, res) => {
       console.error(err);
       return res.status(500).send(err);
     }
-    res.json({ fileName: file.name, filePath: `/uploads/${file.name}` });
+    res.json({
+      fileName: file.name,
+      filePath: `/uploads/${file.name}`
+    });
     aFilePath = `${__dirname}/client/public/uploads/${file.name}`;
-    console.log('uploaded audio');
+    console.log('audio done');
 
     cmd.run(
-        `ffmpeg -loop 1 -i ` + pFilePath + ` -i ` + aFilePath + ` -c:v libx264 -tune stillimage -c:a aac -b:a 192k -vf "scale='iw-mod(iw,2)':'ih-mod(ih,2)',format=yuv420p" -shortest -movflags +faststart -vf scale=1280:720 ` + oFilePath,
-        function(err, data, stderr){
-            console.log(err);
-            console.log(stderr);
-            console.log('ffmpeg done ',data)
-
-            //upload to youtube
-            let oauth = Youtube.authenticate({
-                type: "oauth"
-              , client_id: CREDENTIALS.web.client_id
-              , client_secret: CREDENTIALS.web.client_secret
-              , redirect_url: CREDENTIALS.web.redirect_uris[0]
-            });
-
-            opn(oauth.generateAuthUrl({
-                access_type: "offline"
-              , scope: ["https://www.googleapis.com/auth/youtube.upload"]
-            }));
-
-            // Handle oauth2 callback
-            app.get("/oauth2callback", function (req, res) {
-                const code = req.query.code
-                console.log("Trying to get the token using the following code: " + code);
-                oauth.getToken(code, (err, tokens) => {
-
-                    if (err) {
-                      console.log('Error authenticating')
-                      console.log(err);
-                    } else {
-                      console.log("Got the tokens.");
-                      oauth.setCredentials(tokens);
-                      var req = Youtube.videos.insert({
-                          resource: {
-                              // Video title and description
-                              snippet: {
-                                  title: "Testing YoutTube API NodeJS module"
-                                , description: "Test video upload via YouTube API"
-                              }
-                              // I don't want to spam my subscribers
-                            , status: {
-                                  privacyStatus: "private"
-                              }
-                          }
-                          // This is for the callback function
-                        , part: "snippet,status"
-
-                          // Create the readable stream to upload the video
-                        , media: {
-                              body: fs.createReadStream(oFilePath)
-                          }
-                      }, (err, data) => {
-                          if (err) {
-                            console.log("fs error: " + err);
-                          }
-                          console.log("Done.");
-                          process.exit();
-                      });
-
-                      setInterval(function () {
-                          console.log("progress: " + res.processingDetails);
-                      }, 250);
-
-                  }
-
-                });
-            });
-
-
-
-
-
-
-
-
-
-
-
-
-        }
+      `ffmpeg -loop 1 -i ` + pFilePath + ` -i ` + aFilePath + ` -c:v libx264 -tune stillimage -c:a aac -b:a 192k -vf "scale='iw-mod(iw,2)':'ih-mod(ih,2)',format=yuv420p" -shortest -movflags +faststart -vf scale=1280:720 ` + myVideo,
+      function(err, data, stderr) {
+        console.log('ffmpeg done ', data, stderr, err)
+        uploadToYoutube();
+      }
     );
-
-
-
   });
+
+  function uploadToYoutube() {
+    //upload to youtube
+    let oauth = Youtube.authenticate({
+      type: "oauth",
+      client_id: CREDENTIALS.web.client_id,
+      client_secret: CREDENTIALS.web.client_secret,
+      redirect_url: CREDENTIALS.web.redirect_uris[0]
+    });
+    opn(oauth.generateAuthUrl({
+      access_type: "offline",
+      scope: ["https://www.googleapis.com/auth/youtube.upload"]
+    }));
+    app.get("/oauth2callback", function(req, res) {
+      const code = req.query.code
+      console.log("Trying to get the token using the following code: " + code);
+      oauth.getToken(code, (err, tokens) => {
+
+        if (err) {
+          console.log('Error authenticating')
+          console.log(err);
+        } else {
+          console.log("Got the tokens.");
+          oauth.setCredentials(tokens);
+          var req = Youtube.videos.insert({
+            resource: {
+              // Video title and description
+              snippet: {
+                title: "Testing YoutTube API NodeJS module",
+                description: "Test video upload via YouTube API"
+              }
+              // I don't want to spam my subscribers
+              ,
+              status: {
+                privacyStatus: "private"
+              }
+            }
+            // This is for the callback function
+            ,
+            part: "snippet,status"
+
+              // Create the readable stream to upload the video
+              ,
+            media: {
+              body: fs.createReadStream(myVideo)
+            }
+          }, (err, data) => {
+            if (err) {
+              console.log("fs error: " + err);
+            }
+            console.log("youtube done");
+            process.exit();
+          });
+
+          setInterval(function() {
+            console.log("progress: " + res.processingDetails);
+          }, 250);
+        }
+      });
+    });
+  }
 });
+
+
 
 app.listen(5000, () => console.log('Server Started...'));

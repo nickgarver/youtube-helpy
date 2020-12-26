@@ -5,7 +5,7 @@ import logo from "./logo.svg";
 
 const App = () => (
   <div className="App min-h-screen text-blue-200 flex items-center flex-col p-20">
-  <FileUpload />
+  <FileUpload id="file-upload" />
       <img className="opacity-25" src={logo} alt="React Logo" width="30" />
   </div>
 );

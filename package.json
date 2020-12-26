@@ -32,7 +32,6 @@
     "opn": "^6.0.0",
     "pretty-bytes": "^5.4.1",
     "r-json": "^1.2.10",
-    "react-audio-player": "^0.14.0",
     "youtube-api": "^3.0.1"
   },
   "devDependencies": {
