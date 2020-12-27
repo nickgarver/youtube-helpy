@@ -44,7 +44,7 @@ app.post('/upload', (req, res) => {
       `ffmpeg -loop 1 -i ` + pFilePath + ` -i ` + aFilePath + ` -c:v libx264 -tune stillimage -c:a aac -b:a 192k -vf "scale='iw-mod(iw,2)':'ih-mod(ih,2)',format=yuv420p" -shortest -movflags +faststart -vf scale=1280:720 ` + myVideo,
       function(err, data, stderr) {
         console.log('ffmpeg done ', data, stderr, err)
-        uploadToYoutube();
+        // uploadToYoutube();
       }
     );
   });
