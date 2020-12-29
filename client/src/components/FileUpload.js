@@ -8,8 +8,13 @@ import { faArrowUp, faCompactDisc, faRandom, faPlay } from '@fortawesome/free-so
 import { faYoutube } from '@fortawesome/free-brands-svg-icons'
 
 const FileUpload = () => {
+  let imgPick = Math.floor(Math.random() * 10) + 1;
   const [file, setFile] = useState({});
   const [filename, setFilename] = useState('');
+  const [title, setTitle] = useState('');
+  const [tags, setTags] = useState("cute");
+  const [desc, setDesc] = useState('long ass description');
+  const [image, setImage] = useState("/thumbnails/" + imgPick + ".jpg");
   const [uploadedFile, setUploadedFile] = useState({});
   const [message, setMessage] = useState('');
   const [dropped, setDropped] = useState(false);
@@ -28,10 +33,14 @@ const FileUpload = () => {
         })
       );
       setFilename(acceptedFile[0].name);
+      setTitle(acceptedFile[0].name);
     },
   })
 
-
+  const shuffleImage = async e => {
+    imgPick = Math.floor(Math.random() * 10) + 1;
+    setImage("/thumbnails/" + imgPick.toString() + ".jpg");
+  }
 
   const onSubmit = async e => {
     setSubmitted(true);
@@ -78,7 +87,6 @@ const FileUpload = () => {
         <label className='custom-file-label' htmlFor='customFile'>
           {!dropped && !isDragActive && 'Drop a beat to upload!'}
           {isDragActive && !isDragReject && "Drop it like it's hot!"}
-          {dropped && !isDragReject && filename}
         </label>
         {!dropped && <FontAwesomeIcon icon={faCompactDisc} size="6x" />}
       </div>
@@ -95,22 +103,26 @@ const FileUpload = () => {
 
             <div>
               <label className="input-label">Title</label>
-              <input form="myForm" className="form-control my-input" type="text" value={filename}/>
+              <input form="myForm" className="form-control my-input" type="text" value={title} onChange={(e) => setTitle(e.target.value)} required/>
             </div>
 
             <div>
               <label className="input-label">Tags</label>
-              <input form="myForm" className="form-control my-input" type="text"/>
+              <input form="myForm" className="form-control my-input" type="text" value={tags} onChange={(e) => setTags(e.target.value)} required/>
             </div>
 
             <div>
               <label className="input-label">Description</label>
-              <textarea id='my-desc' form="myForm" className="form-control my-input" type=""/>
+              <textarea id='my-desc' form="myForm" className="form-control my-input" type="" value={desc} onChange={(e) => setDesc(e.target.value)} required/>
             </div>
 
             <div id="box">
               <label className="input-label">Image</label>
-                <div id="box-image" className="d-flex align-items-center justify-content-center">
+                <div id="box-image"
+                  className="d-flex align-items-center justify-content-center" 
+                  onClick={shuffleImage}
+                  style={{ backgroundImage: `url(${process.env.PUBLIC_URL + image})`
+                }}>
                   <FontAwesomeIcon className="box-icon" icon={faRandom} size="2x"/>
               </div>
             </div>

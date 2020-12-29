@@ -77,6 +77,7 @@ app.post('/upload', (req, res) => {
               // Video title and description
               snippet: {
                 title: "Testing YoutTube API NodeJS module",
+                tags: ["cute", "asmr", "type beats"],
                 description: "Test video upload via YouTube API"
               }
               // I don't want to spam my subscribers

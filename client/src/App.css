@@ -187,9 +187,8 @@ form > div:nth-child(4), form > div:nth-child(5) {
   height: 100px;
   width: 100%;
   border-radius: 15px;
-  background: #12c2e9;  /* fallback for old browsers */
-  background: -webkit-linear-gradient(to right, #f64f59, #c471ed, #12c2e9);  /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9);
+  background-repeat: no-repeat;
+  background-size: cover;
   transition-duration: 0.2s;
 }
 #box-image:hover{
