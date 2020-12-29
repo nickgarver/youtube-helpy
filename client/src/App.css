@@ -6,6 +6,7 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='12' viewBox='0 0 20 12'%3E%3Cg fill-rule='evenodd'%3E%3Cg id='charlie-brown' fill='%233076e8' fill-opacity='0.4'%3E%3Cpath d='M9.8 12L0 2.2V.8l10 10 10-10v1.4L10.2 12h-.4zm-4 0L0 6.2V4.8L7.2 12H5.8zm8.4 0L20 6.2V4.8L12.8 12h1.4zM9.8 0l.2.2.2-.2h-.4zm-4 0L10 4.2 14.2 0h-1.4L10 2.8 7.2 0H5.8z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   margin: 0px;
   padding: 0px;
+  font-family: 'Roboto', sans-serif;
 }
 
 .App-logo {
@@ -34,15 +35,6 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 /* file upload */
 
 body, .root {
@@ -59,48 +51,10 @@ body, .root {
   text-align: center;
 }
 
-#info-box{
-  z-index: 2;
-  position: absolute;
-  width: 100%;
-  height: 80%;
-  max-width: 375px;
-  max-height: 512px;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 30px;
-}
-
-#pseudo-box{
-  z-index: 2;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  max-width: 375px;
-  max-height: 512px;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 30px;
-}
-
-form{
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  margin: 0 auto;
-}
-
-.my-input{
-  z-index: 3;
-}
 #file-dropzone{
+  font-weight: 400;
+  outline: none;
+  font-size: 20px;
   z-index: 1;
   display: block;
   cursor: pointer;
@@ -121,6 +75,132 @@ form{
   background-color: rgba(255, 255, 255, 0.2);
 }
 
+#info-box{
+  z-index: 2;
+  position: absolute;
+  width: 90%;
+  height: 90%;
+  max-width: 375px;
+  max-height: 512px;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  background: #ECE9E6;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #FFFFFF, #ECE9E6);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #FFFFFF, #ECE9E6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  border-radius: 30px;
+}
+
+#pseudo-box{
+  z-index: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  max-width: 300px;
+  max-height: 300px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: rgba(248,248,248, 0.5);
+  border-radius: 30px;
+}
+form > h2 {
+  text-align: center;
+  width: 100%;
+  color: #131313;
+  margin: 15px auto;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+form > h2 > .button-space {
+  color: #FF0000;
+  margin-right: 5px;
+}
+form{
+  font-family: 'Noto Sans JP', sans-serif;
+  color: #fefefe;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: left;
+  border-radius: 30px;
+}
+
+form > div {
+  position: relative;
+  width: 80%;
+  height: 14%;
+  margin: 0 auto;
+}
+
+form > div:nth-child(4), form > div:nth-child(5) {
+  position: relative;
+  width: 80%;
+  height: 22%;
+  margin: 0 auto;
+}
+
+.my-input{
+  position: relative;
+  z-index: 3;
+  text-align: left;
+  border-radius: 10px;
+  border: 0px solid black;
+  width: 100%;
+  height: 40px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 20px;
+  background-color: rgba(135, 137, 138, 0.1);
+}
+.my-input:focus{
+  background-color: rgba(248, 248, 248, 0.0);
+}
+
+.input-label{
+  text-align: left;
+  color: grey;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+#my-desc{
+  height: 80px;
+  resize: none;
+}
+
+#box-image{
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  margin: 0 auto;
+  color: #131313;
+  height: 100px;
+  width: 100%;
+  border-radius: 15px;
+  background: #12c2e9;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #f64f59, #c471ed, #12c2e9);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #f64f59, #c471ed, #12c2e9);
+  transition-duration: 0.2s;
+}
+#box-image:hover{
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+#box-l > .box-icon, #box-r > .box-icon {
+  text-align: center !important;
+  padding: 0px !important;
+  margin-left: 5px;
+}
 
 .progress {
     z-index: 2;
@@ -148,32 +228,38 @@ Audio {
   color: red;
 }
 .custom-file-label{
+  cursor: pointer;
+}
 
+.button-space{
+  margin-left: 15px;
 }
 
 .my-btn {
     z-index: 3;
     position: absolute;
-    top: 0px;
+    bottom: 0px;
+    left: 0px;
     right: 0px;
-    margin: 10px;
+    margin: 0 auto;
+    margin-bottom: 15px;
+    text-align: center;
     display: inline-block;
     box-sizing: border-box;
     border: none;
-    border-radius: 4px;
+    border-radius: 10px;
     padding: 0 16px;
-    min-width: 64px;
-    height: 36px;
+    min-width: 150px;
+    height: 40px;
     vertical-align: middle;
     text-align: center;
     text-overflow: ellipsis;
-    text-transform: uppercase;
     color: rgb(var(--pure-material-onprimary-rgb, 255, 255, 255));
     background-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
     box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-    font-family: var(--pure-material-font, "Roboto", "Segoe UI", BlinkMacSystemFont, system-ui, -apple-system);
+    font-family: 'Noto Sans JP', sans-serif;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     line-height: 36px;
     overflow: hidden;
     outline: none;

@@ -3,6 +3,9 @@ import Message from './Message';
 import Progress from './Progress';
 import { useDropzone } from "react-dropzone"
 import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowUp, faCompactDisc, faRandom, faPlay } from '@fortawesome/free-solid-svg-icons'
+import { faYoutube } from '@fortawesome/free-brands-svg-icons'
 
 const FileUpload = () => {
   const [file, setFile] = useState({});
@@ -73,21 +76,57 @@ const FileUpload = () => {
       <div id='file-dropzone' {...getRootProps()}>
         <input form="myForm" id='customFile' {...getInputProps()} />
         <label className='custom-file-label' htmlFor='customFile'>
-          {filename.length < 1 && !isDragActive && 'Click here or drop a file to upload!'}
+          {!dropped && !isDragActive && 'Drop a beat to upload!'}
           {isDragActive && !isDragReject && "Drop it like it's hot!"}
-          {filename.length > 0 && !isDragReject && filename}
+          {dropped && !isDragReject && filename}
         </label>
+        {!dropped && <FontAwesomeIcon icon={faCompactDisc} size="6x" />}
       </div>
+
 
       {dropped && <Fragment>
         <div id="info-box">
           {message ? <Message msg={message} /> : null}
           <form id="myForm" onSubmit={onSubmit}>
-            {dropped && <input form="myForm" className="form-control my-input" type="text"/>}
-            {dropped && <input form="myForm" type='submit' value='Upload' className='btn btn-primary my-btn' />}
+            <h2>
+                <FontAwesomeIcon className="button-space" icon={faYoutube} size="1x"/>
+                Youtube Helpy
+            </h2>
+
+            <div>
+              <label className="input-label">Title</label>
+              <input form="myForm" className="form-control my-input" type="text" value={filename}/>
+            </div>
+
+            <div>
+              <label className="input-label">Tags</label>
+              <input form="myForm" className="form-control my-input" type="text"/>
+            </div>
+
+            <div>
+              <label className="input-label">Description</label>
+              <textarea id='my-desc' form="myForm" className="form-control my-input" type=""/>
+            </div>
+
+            <div id="box">
+              <label className="input-label">Image</label>
+                <div id="box-image" className="d-flex align-items-center justify-content-center">
+                  <FontAwesomeIcon className="box-icon" icon={faRandom} size="2x"/>
+              </div>
+            </div>
+
+            <button form="myForm" type='submit' value='Upload' className='my-btn'>
+            Upload
+            <FontAwesomeIcon className="button-space" icon={faArrowUp}/>
+            </button>
           </form>
           {submitted && <Progress percentage={uploadPercentage} />}
-          {uploadedFile ? ( <div> {dropped && <audio src={file.preview} controls/> } </div> ) : null}
+
+          {uploadedFile ? (
+            <div>
+              {dropped && <audio id="player" src={file.preview} /> }
+            </div>
+          ) : null}
         </div>
       </Fragment>}
     </Fragment>
