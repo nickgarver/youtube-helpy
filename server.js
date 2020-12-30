@@ -17,15 +17,11 @@ const CREDENTIALS = readJson(`${__dirname}/client_secret.json`);
 
 // Upload Endpoint
 app.post('/upload', (req, res) => {
-  var aFilePath = "";
-  var pFilePath = `${__dirname}/client/public/thumbnails/zack.jpg`;
-  var myVideo = `${__dirname}/client/public/uploads/out.mp4`;
   if (req.files === null) {
     return res.status(400).json({
       msg: 'No file uploaded'
     });
   }
-
   const file = req.files.file;
 
   file.mv(`${__dirname}/client/public/uploads/${file.name}`, err => {
@@ -37,11 +33,16 @@ app.post('/upload', (req, res) => {
       fileName: file.name,
       filePath: `/uploads/${file.name}`
     });
-    aFilePath = `${__dirname}/client/public/uploads/${file.name}`;
     console.log('audio done');
+    const audioPath = `${__dirname}/client/public/uploads/${file.name}`;
+    const photoPath = `${__dirname}/client/public` + req.body.image;
+    const videoPath = `${__dirname}/client/public/uploads/out.mp4`;
+    const title = req.body.title;
+    const tags = req.body.tags;
+    const desc = req.body.desc;
 
     cmd.run(
-      `ffmpeg -loop 1 -i ` + pFilePath + ` -i ` + aFilePath + ` -c:v libx264 -tune stillimage -c:a aac -b:a 192k -vf "scale='iw-mod(iw,2)':'ih-mod(ih,2)',format=yuv420p" -shortest -movflags +faststart -vf scale=1280:720 ` + myVideo,
+      `ffmpeg -loop 1 -i ` + photoPath + ` -i ` + audioPath + ` -c:v libx264 -tune stillimage -c:a aac -b:a 192k -vf "scale='iw-mod(iw,2)':'ih-mod(ih,2)',format=yuv420p" -shortest -movflags +faststart -vf scale=1280:720 ` + videoPath,
       function(err, data, stderr) {
         console.log('ffmpeg done ', data, stderr, err)
         // uploadToYoutube();
@@ -65,7 +66,6 @@ app.post('/upload', (req, res) => {
       const code = req.query.code
       console.log("Trying to get the token using the following code: " + code);
       oauth.getToken(code, (err, tokens) => {
-
         if (err) {
           console.log('Error authenticating')
           console.log(err);
@@ -76,9 +76,9 @@ app.post('/upload', (req, res) => {
             resource: {
               // Video title and description
               snippet: {
-                title: "Testing YoutTube API NodeJS module",
+                title: title,
                 tags: ["cute", "asmr", "type beats"],
-                description: "Test video upload via YouTube API"
+                description: desc
               }
               // I don't want to spam my subscribers
               ,
@@ -93,7 +93,7 @@ app.post('/upload', (req, res) => {
               // Create the readable stream to upload the video
               ,
             media: {
-              body: fs.createReadStream(myVideo)
+              body: fs.createReadStream(videoPath)
             }
           }, (err, data) => {
             if (err) {

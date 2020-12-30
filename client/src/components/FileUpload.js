@@ -1,20 +1,22 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useLayoutEffect } from 'react';
 import Message from './Message';
 import Progress from './Progress';
+import Tags from './Tags';
 import { useDropzone } from "react-dropzone"
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowUp, faCompactDisc, faRandom, faPlay } from '@fortawesome/free-solid-svg-icons'
+import { faArrowUp, faCompactDisc, faRandom } from '@fortawesome/free-solid-svg-icons'
 import { faYoutube } from '@fortawesome/free-brands-svg-icons'
 
 const FileUpload = () => {
-  let imgPick = Math.floor(Math.random() * 10) + 1;
+  let imgPick
   const [file, setFile] = useState({});
   const [filename, setFilename] = useState('');
-  const [title, setTitle] = useState('');
-  const [tags, setTags] = useState("cute");
+  const [title, setTitle] = useState(filename);
+  // const [tags, setTags] = useState("");
   const [desc, setDesc] = useState('long ass description');
-  const [image, setImage] = useState("/thumbnails/" + imgPick + ".jpg");
+  const [image, setImage] = useState("");
+  const [color, setColor] = useState("rgba(255, 255, 255, 0.0");
   const [uploadedFile, setUploadedFile] = useState({});
   const [message, setMessage] = useState('');
   const [dropped, setDropped] = useState(false);
@@ -24,7 +26,9 @@ const FileUpload = () => {
   const { getRootProps, getInputProps, isDragActive, isDragReject} = useDropzone({
     maxFiles: 1, // number of files,
     accept: "audio/mpeg",
-    onDrop: (acceptedFile) => {
+    onDropAccepted: (acceptedFile) => {
+      imgPick = Math.floor(Math.random() * 10) + 1;
+      shuffleImage();
       setDropped(true);
       setFile(
         // convert preview string into a URL
@@ -35,7 +39,22 @@ const FileUpload = () => {
       setFilename(acceptedFile[0].name);
       setTitle(acceptedFile[0].name);
     },
+    onDropRejected: () => {
+        console.log("drop rejected, do nothing.");
+    },
   })
+
+  useLayoutEffect(() => {
+    if(!isDragActive && !isDragReject) {
+      setColor("rgba(255, 255, 255, 0.0"); //none
+    } else if (isDragActive && !isDragReject) {
+      setColor("rgba(102, 187, 107, 0.9"); //green
+    } else if (isDragActive && isDragReject) {
+      setColor("rgba(239, 83, 79, 0.9"); //red
+    } else {
+      setColor("rgba(239, 83, 79, 0.9"); //red
+    }
+  }, [isDragActive] )
 
   const shuffleImage = async e => {
     imgPick = Math.floor(Math.random() * 10) + 1;
@@ -47,6 +66,11 @@ const FileUpload = () => {
     e.preventDefault();
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('filename', filename);
+    formData.append('title', title);
+    // formData.append('tags', tags);
+    formData.append('desc', desc);
+    formData.append('image', image);
 
     try {
       const res = await axios.post('/upload', formData, {
@@ -82,56 +106,57 @@ const FileUpload = () => {
 
   return (
     <Fragment>
-      <div id='file-dropzone' {...getRootProps()}>
+      <div id='file-dropzone' style={{backgroundColor: color}} {...getRootProps({})}>
         <input form="myForm" id='customFile' {...getInputProps()} />
-        <label className='custom-file-label' htmlFor='customFile'>
-          {!dropped && !isDragActive && 'Drop a beat to upload!'}
+        <label className='custom-file-label' htmlFor="customFile">
+          {!isDragActive && !isDragReject && "Drop an mp3!"}
           {isDragActive && !isDragReject && "Drop it like it's hot!"}
+          {isDragActive && isDragReject && "Not an mp3"}
         </label>
         {!dropped && <FontAwesomeIcon icon={faCompactDisc} size="6x" />}
       </div>
 
-
       {dropped && <Fragment>
         <div id="info-box">
           {message ? <Message msg={message} /> : null}
-          <form id="myForm" onSubmit={onSubmit}>
-            <h2>
-                <FontAwesomeIcon className="button-space" icon={faYoutube} size="1x"/>
-                Youtube Helpy
-            </h2>
-
-            <div>
-              <label className="input-label">Title</label>
-              <input form="myForm" className="form-control my-input" type="text" value={title} onChange={(e) => setTitle(e.target.value)} required/>
-            </div>
-
-            <div>
-              <label className="input-label">Tags</label>
-              <input form="myForm" className="form-control my-input" type="text" value={tags} onChange={(e) => setTags(e.target.value)} required/>
-            </div>
-
-            <div>
-              <label className="input-label">Description</label>
-              <textarea id='my-desc' form="myForm" className="form-control my-input" type="" value={desc} onChange={(e) => setDesc(e.target.value)} required/>
-            </div>
-
-            <div id="box">
-              <label className="input-label">Image</label>
-                <div id="box-image"
-                  className="d-flex align-items-center justify-content-center" 
-                  onClick={shuffleImage}
-                  style={{ backgroundImage: `url(${process.env.PUBLIC_URL + image})`
-                }}>
-                  <FontAwesomeIcon className="box-icon" icon={faRandom} size="2x"/>
+          {!submitted && <Fragment>
+            <form id="myForm" onSubmit={onSubmit}>
+              <h2>
+                  <FontAwesomeIcon className="button-space" icon={faYoutube} size="1x"/>
+                  Youtube Helpy
+              </h2>
+              <div>
+                <label className="input-label">Title</label>
+                <input form="myForm" className="form-control my-input" type="text" value={title} onChange={(e) => setTitle(e.target.value)} required/>
               </div>
-            </div>
+              <div>
+                <label className="input-label">Tags</label>
+                <Tags/>
 
-            <button form="myForm" type='submit' value='Upload' className='my-btn'>
-            Upload
-            <FontAwesomeIcon className="button-space" icon={faArrowUp}/>
-            </button>
-          </form>
+
+              </div>
+              <div>
+                <label className="input-label">Description</label>
+                <textarea id='my-desc' form="myForm" className="form-control my-input" type="" value={desc} onChange={(e) => setDesc(e.target.value)} required/>
+              </div>
+              <div id="box">
+                <label className="input-label">Image</label>
+                  <div id="box-image"
+                    className="d-flex align-items-center justify-content-center"
+                    onClick={shuffleImage}
+                    style={{ backgroundImage: `url(${process.env.PUBLIC_URL + image})`
+                  }}>
+                    <FontAwesomeIcon className="box-icon" icon={faRandom} size="2x"/>
+                </div>
+              </div>
+
+              <button form="myForm" type='submit' value='Upload' className='my-btn'>
+              Upload
+              <FontAwesomeIcon className="button-space" icon={faArrowUp}/>
+              </button>
+            </form>
+          </Fragment>
+          }
           {submitted && <Progress percentage={uploadPercentage} />}
 
           {uploadedFile ? (

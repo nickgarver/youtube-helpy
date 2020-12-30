@@ -7,6 +7,9 @@
   margin: 0px;
   padding: 0px;
   font-family: 'Roboto', sans-serif;
+  position: relative;
+  height: 100%;
+  width: 100%;
 }
 
 .App-logo {
@@ -71,17 +74,12 @@ body, .root {
   display: flex;
   transition-duration: 0.2s;
 }
-#file-dropzone:hover{
-  background-color: rgba(255, 255, 255, 0.2);
-}
 
 #info-box{
   z-index: 2;
-  position: absolute;
-  width: 90%;
-  height: 90%;
-  max-width: 375px;
-  max-height: 512px;
+  position: relative;
+  width: 375px;
+  height: 600px;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -92,20 +90,20 @@ body, .root {
   border-radius: 30px;
 }
 
-#pseudo-box{
-  z-index: 0;
-  position: absolute;
+form{
+  font-family: 'Noto Sans JP', sans-serif;
+  color: #fefefe;
+  position: relative;
   width: 100%;
   height: 100%;
-  max-width: 300px;
-  max-height: 300px;
-  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-color: rgba(248,248,248, 0.5);
+  text-align: left;
   border-radius: 30px;
 }
+
+
 form > h2 {
   text-align: center;
   width: 100%;
@@ -114,36 +112,34 @@ form > h2 {
   font-family: 'Roboto', sans-serif;
   font-weight: 600;
   font-size: 20px;
+  margin-bottom: 2px;
+  margin-top: 0px;
+  padding: 10px;
 }
 
 form > h2 > .button-space {
   color: #FF0000;
   margin-right: 5px;
 }
-form{
-  font-family: 'Noto Sans JP', sans-serif;
-  color: #fefefe;
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  text-align: left;
-  border-radius: 30px;
+
+form > div:nth-child(2) {
+  position: relative;
+  width: 90%;
+  height: 13%;
+  margin: 0 auto;
 }
 
-form > div {
+form > div:nth-child(3){
   position: relative;
-  width: 80%;
-  height: 14%;
+  width: 90%;
+  height: 31%;
   margin: 0 auto;
 }
 
 form > div:nth-child(4), form > div:nth-child(5) {
   position: relative;
-  width: 80%;
-  height: 22%;
+  width: 90%;
+  height: 19%;
   margin: 0 auto;
 }
 
@@ -171,6 +167,94 @@ form > div:nth-child(4), form > div:nth-child(5) {
   margin-bottom: 5px;
 }
 
+/* TAGS */
+.tag-box {
+  /* border-top: 1px solid #7e69c6;
+  border-left: 1px solid #7e69c6;
+  border-right: 1px solid #7e69c6; */
+  border-radius: 10px;
+  background-color: rgba(135, 137, 138, 0.1);
+}
+.tag-box > input {
+  padding: 0.5rem;
+  /* border-bottom: 1px solid #7e69c6; */
+  border-top: 1px solid #7e69c6;
+  /* border-left: none;
+  border-right: none; */
+  outline: none;
+  background-color: transparent;
+  width: 100%;
+  color: #131313;
+  border-radius: 0px 0px 10px 10px;
+}
+
+.tag-box-pills {
+  overflow: scroll;
+  width: auto;
+  position: relative;
+  padding-left: 1rem;
+  padding-bottom: 1rem;
+  color: #131313;
+  height: 105px;
+  border-radius: 9px 10px 0px 0px;
+}
+
+small button {
+  float: right;
+}
+
+a {
+  cursor: pointer;
+}
+
+.col-1 {
+  margin-right: 1rem;
+  &.right {
+    width: 50%;
+  }
+}
+
+.CodeMirror {
+  height: auto;
+  padding: 1rem;
+  border-radius: 0.25rem;
+}
+
+ul {
+  padding-left: 0px;
+}
+
+li {
+  list-style: none;
+  display: inline-block;
+  margin-right: 1rem;
+  margin-top: 1rem;
+  background-color: gold;
+  border-radius: 0.25rem;
+  float: left;
+}
+
+.remove {
+  margin-left: 0.2rem;
+}
+
+.tag-box-pill-text {
+  margin-left: 0.5rem;
+  padding: 0.15rem 0.2rem;
+}
+
+.tag-box-pill > button {
+  padding: 0.15rem 0.2rem;
+  background-color: chocolate;
+  border-radius: 0rem 0.25rem 0.25rem 0rem;
+}
+
+.autocomplete{
+  background-color: chocolate;
+  display: none;
+  height: 0px;
+}
+
 #my-desc{
   height: 80px;
   resize: none;
@@ -184,7 +268,7 @@ form > div:nth-child(4), form > div:nth-child(5) {
   text-align: center;
   margin: 0 auto;
   color: #131313;
-  height: 100px;
+  height: 80px;
   width: 100%;
   border-radius: 15px;
   background-repeat: no-repeat;
@@ -226,6 +310,17 @@ Audio {
   border-radius: 0px;
   color: red;
 }
+#customFile{
+  z-index: 10;
+  background-color: green;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  display: none;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+}
 .custom-file-label{
   cursor: pointer;
 }
@@ -248,7 +343,7 @@ Audio {
     border: none;
     border-radius: 10px;
     padding: 0 16px;
-    min-width: 150px;
+    width: 150px;
     height: 40px;
     vertical-align: middle;
     text-align: center;
