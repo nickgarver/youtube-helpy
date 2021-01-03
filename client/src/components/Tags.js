@@ -11,6 +11,23 @@ const sampleTags = List(
 )
 
 export default class BackspaceDeletion extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      tags: sampleTags,
+      selected: sampleTags,
+    }
+    const tempObj = Object.entries(this.state.selected.toJS());
+    const tempArray = [];
+    tempObj.forEach(([key, value]) => {
+      tempArray.push(value['label'])
+    });
+
+    props.setTags(...props.myTags, tempArray)
+
+  }
+
   componentDidMount() {
       this.scrollToBottom();
   }
@@ -25,15 +42,10 @@ export default class BackspaceDeletion extends Component {
         containerId: "tagPills"
       });
   }
-  state = {
-    tags: sampleTags,
-    selected: sampleTags
-  }
 
   render() {
     const { tags, selected } = this.state
     const onSelect = tag => {
-      console.log("new tag or something");
       const newTag = {
         label: tag.label,
         value: tag.value || tag.label
@@ -42,12 +54,17 @@ export default class BackspaceDeletion extends Component {
       this.setState({
         selected: selected.push(newTag)
       })
+
+      this.props.setTags([...this.props.myTags, newTag.value])
+
     }
 
     const remove = tag => {
       this.setState({
         selected: selected.filter(t => t.value !== tag.value)
       })
+      this.props.setTags(this.props.myTags.filter((e)=>(e !== tag.value)))
+
     }
 
     const placeholder = selected.isEmpty() ? '' :
@@ -57,6 +74,7 @@ export default class BackspaceDeletion extends Component {
       <TagBox
         tags={tags.toJS()}
         selected={selected.toJS()}
+        value={this.state.value}
         onSelect={onSelect}
         removeTag={remove}
         backspaceDelete={true}

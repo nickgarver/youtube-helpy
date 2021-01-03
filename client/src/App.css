@@ -2,8 +2,9 @@
 
 .App {
   text-align: center;
-  background-color: #4286f4;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='12' viewBox='0 0 20 12'%3E%3Cg fill-rule='evenodd'%3E%3Cg id='charlie-brown' fill='%233076e8' fill-opacity='0.4'%3E%3Cpath d='M9.8 12L0 2.2V.8l10 10 10-10v1.4L10.2 12h-.4zm-4 0L0 6.2V4.8L7.2 12H5.8zm8.4 0L20 6.2V4.8L12.8 12h1.4zM9.8 0l.2.2.2-.2h-.4zm-4 0L10 4.2 14.2 0h-1.4L10 2.8 7.2 0H5.8z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background: #36D1DC;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #2e86de, #48dbfb);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #2e86de, #48dbfb); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   margin: 0px;
   padding: 0px;
   font-family: 'Roboto', sans-serif;
@@ -79,7 +80,6 @@ body, .root {
   z-index: 2;
   position: relative;
   width: 375px;
-  height: 600px;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -88,6 +88,7 @@ body, .root {
   background: -webkit-linear-gradient(to right, #FFFFFF, #ECE9E6);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to right, #FFFFFF, #ECE9E6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   border-radius: 30px;
+  transition-duration: 0.2s;
 }
 
 form{
@@ -95,7 +96,7 @@ form{
   color: #fefefe;
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 600px;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -154,10 +155,10 @@ form > div:nth-child(4), form > div:nth-child(5) {
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
   font-size: 20px;
-  background-color: rgba(135, 137, 138, 0.1);
+  background-color: rgba(131, 149, 167,0.2)
 }
 .my-input:focus{
-  background-color: rgba(248, 248, 248, 0.0);
+  background-color: rgba(131, 149, 167,0.0)
 }
 
 .input-label{
@@ -169,23 +170,24 @@ form > div:nth-child(4), form > div:nth-child(5) {
 
 /* TAGS */
 .tag-box {
-  /* border-top: 1px solid #7e69c6;
-  border-left: 1px solid #7e69c6;
-  border-right: 1px solid #7e69c6; */
   border-radius: 10px;
-  background-color: rgba(135, 137, 138, 0.1);
+  background-color: rgba(131, 149, 167,0.2);
+  transition: 0.2s;
 }
+
 .tag-box > input {
   padding: 0.5rem;
-  /* border-bottom: 1px solid #7e69c6; */
-  border-top: 1px solid #7e69c6;
-  /* border-left: none;
-  border-right: none; */
+  border-top: 1px solid #8395a7;
   outline: none;
   background-color: transparent;
   width: 100%;
   color: #131313;
   border-radius: 0px 0px 10px 10px;
+}
+
+.tag-box:focus-within {
+    outline: none;
+    box-shadow: 0 0 0 4px #C0D5F8;
 }
 
 .tag-box-pills {
@@ -194,7 +196,7 @@ form > div:nth-child(4), form > div:nth-child(5) {
   position: relative;
   padding-left: 1rem;
   padding-bottom: 1rem;
-  color: #131313;
+  color: #000;
   height: 105px;
   border-radius: 9px 10px 0px 0px;
 }
@@ -229,7 +231,7 @@ li {
   display: inline-block;
   margin-right: 1rem;
   margin-top: 1rem;
-  background-color: gold;
+  background-color: #ff9ff3;
   border-radius: 0.25rem;
   float: left;
 }
@@ -241,12 +243,18 @@ li {
 .tag-box-pill-text {
   margin-left: 0.5rem;
   padding: 0.15rem 0.2rem;
+  color: #222f3e;
+}
+
+.tag-box-pill{
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 
 .tag-box-pill > button {
   padding: 0.15rem 0.2rem;
-  background-color: chocolate;
+  background-color: #576574;
   border-radius: 0rem 0.25rem 0.25rem 0rem;
+  color: #fefefe;
 }
 
 .autocomplete{
@@ -285,19 +293,11 @@ li {
   margin-left: 5px;
 }
 
-.progress {
-    z-index: 2;
-    display: flex;
-    height: 1rem;
-    overflow: hidden;
-    background-color: rgba(0,0,0,0.0);
-    border-radius: 5px;
-    margin: 0px;
-    position: fixed;
-    left: 0px;
-    height: 50px;
-    width: 100%;
-    opacity: 1;
+.myProgress{
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
 }
 
 Audio {
@@ -349,7 +349,7 @@ Audio {
     text-align: center;
     text-overflow: ellipsis;
     color: rgb(var(--pure-material-onprimary-rgb, 255, 255, 255));
-    background-color: rgb(var(--pure-material-primary-rgb, 33, 150, 243));
+    background-color: #36A1E5;
     box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
     font-family: 'Noto Sans JP', sans-serif;
     font-size: 14px;

@@ -1,5 +1,4 @@
 import React, { Fragment, useState, useLayoutEffect } from 'react';
-import Message from './Message';
 import Progress from './Progress';
 import Tags from './Tags';
 import { useDropzone } from "react-dropzone"
@@ -13,12 +12,12 @@ const FileUpload = () => {
   const [file, setFile] = useState({});
   const [filename, setFilename] = useState('');
   const [title, setTitle] = useState(filename);
-  // const [tags, setTags] = useState("");
+  const [myTags, setTags] = useState([]);
   const [desc, setDesc] = useState('long ass description');
   const [image, setImage] = useState("");
   const [color, setColor] = useState("rgba(255, 255, 255, 0.0");
   const [uploadedFile, setUploadedFile] = useState({});
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState('Audio uploading');
   const [dropped, setDropped] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [uploadPercentage, setUploadPercentage] = useState(0);
@@ -68,6 +67,7 @@ const FileUpload = () => {
     formData.append('file', file);
     formData.append('filename', filename);
     formData.append('title', title);
+    console.log(myTags);
     // formData.append('tags', tags);
     formData.append('desc', desc);
     formData.append('image', image);
@@ -118,7 +118,6 @@ const FileUpload = () => {
 
       {dropped && <Fragment>
         <div id="info-box">
-          {message ? <Message msg={message} /> : null}
           {!submitted && <Fragment>
             <form id="myForm" onSubmit={onSubmit}>
               <h2>
@@ -131,9 +130,7 @@ const FileUpload = () => {
               </div>
               <div>
                 <label className="input-label">Tags</label>
-                <Tags/>
-
-
+                <Tags myTags={myTags} setTags={setTags} />
               </div>
               <div>
                 <label className="input-label">Description</label>
@@ -157,7 +154,7 @@ const FileUpload = () => {
             </form>
           </Fragment>
           }
-          {submitted && <Progress percentage={uploadPercentage} />}
+          {submitted && <Progress percentage={uploadPercentage} message={message}/>}
 
           {uploadedFile ? (
             <div>

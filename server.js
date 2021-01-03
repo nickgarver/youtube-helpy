@@ -40,14 +40,14 @@ app.post('/upload', (req, res) => {
     const title = req.body.title;
     const tags = req.body.tags;
     const desc = req.body.desc;
-
-    cmd.run(
-      `ffmpeg -loop 1 -i ` + photoPath + ` -i ` + audioPath + ` -c:v libx264 -tune stillimage -c:a aac -b:a 192k -vf "scale='iw-mod(iw,2)':'ih-mod(ih,2)',format=yuv420p" -shortest -movflags +faststart -vf scale=1280:720 ` + videoPath,
-      function(err, data, stderr) {
-        console.log('ffmpeg done ', data, stderr, err)
-        // uploadToYoutube();
-      }
-    );
+    console.log(tags);
+    // cmd.run(
+    //   `ffmpeg -loop 1 -i ` + photoPath + ` -i ` + audioPath + ` -c:v libx264 -tune stillimage -c:a aac -b:a 192k -vf "scale='iw-mod(iw,2)':'ih-mod(ih,2)',format=yuv420p" -shortest -movflags +faststart -vf scale=1280:720 ` + videoPath,
+    //   function(err, data, stderr) {
+    //     console.log('ffmpeg done ', data, stderr, err)
+    //     // uploadToYoutube();
+    //   }
+    // );
   });
 
   function uploadToYoutube() {
