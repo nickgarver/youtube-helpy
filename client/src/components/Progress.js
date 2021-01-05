@@ -1,14 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { CircularProgressbar } from 'react-circular-progressbar';
+import { CircularProgressbarWithChildren } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 const Progress = ({ percentage,message }) => {
   return (
-    <CircularProgressbar
+    <CircularProgressbarWithChildren
       className="myProgress"
       value={percentage}
-      text={`${percentage}%`}
       background={true}
       styles={{
         // Customize the path, i.e. the "completed progress"
@@ -32,7 +31,7 @@ const Progress = ({ percentage,message }) => {
           // Text color
           fill: '#fefefe',
           // Text size
-          fontSize: '12px',
+          fontSize: '8px',
         },
         // Customize background - only used when the `background` prop is true
         background: {
@@ -40,8 +39,9 @@ const Progress = ({ percentage,message }) => {
         },
       }}
     >
-    {percentage}%
-    </CircularProgressbar>
+    <strong href="https://github.com/nickgarver" style={{ fontSize: 40, color: '#fefefe' }} >{percentage}%</strong>
+    <a href="https://github.com/nickgarver" style={{ fontSize: 15, color: '#fefefe' }}>{message}</a>
+    </CircularProgressbarWithChildren>
   );
 };
 

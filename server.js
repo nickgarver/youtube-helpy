@@ -1,12 +1,15 @@
 const express = require('express');
 const fileUpload = require('express-fileupload');
-var cmd = require('node-cmd');
 const app = express();
+const {FFMpegProgress} = require('ffmpeg-progress-wrapper');
+const fs = require('fs')
 
 app.use(fileUpload());
 
+let progAmt = 33;
+let progMsg = 'Converting 2 video :-)';
+
 const Youtube = require("youtube-api"),
-  fs = require("fs"),
   readJson = require("r-json"),
   Logger = require("bug-killer"),
   opn = require("opn"),
@@ -29,25 +32,52 @@ app.post('/upload', (req, res) => {
       console.error(err);
       return res.status(500).send(err);
     }
-    res.json({
-      fileName: file.name,
-      filePath: `/uploads/${file.name}`
-    });
-    console.log('audio done');
+
     const audioPath = `${__dirname}/client/public/uploads/${file.name}`;
     const photoPath = `${__dirname}/client/public` + req.body.image;
     const videoPath = `${__dirname}/client/public/uploads/out.mp4`;
     const title = req.body.title;
     const tags = req.body.tags;
     const desc = req.body.desc;
-    console.log(tags);
-    // cmd.run(
-    //   `ffmpeg -loop 1 -i ` + photoPath + ` -i ` + audioPath + ` -c:v libx264 -tune stillimage -c:a aac -b:a 192k -vf "scale='iw-mod(iw,2)':'ih-mod(ih,2)',format=yuv420p" -shortest -movflags +faststart -vf scale=1280:720 ` + videoPath,
-    //   function(err, data, stderr) {
-    //     console.log('ffmpeg done ', data, stderr, err)
-    //     // uploadToYoutube();
-    //   }
-    // );
+    const tFrames = req.body.totalFrames;
+    res.json({
+      fileName: file.name,
+      filePath: `/uploads/${file.name}`
+    });
+
+    (async () => {
+
+        const process = new FFMpegProgress(['-loop', '1', '-i' , photoPath , '-i', audioPath, '-c:v', 'libx264', '-tune', 'stillimage', '-c:a', 'aac', '-b:a', '192k', '-vf', "scale='iw-mod(iw,2)':'ih-mod(ih,2)',format=yuv420p", '-shortest', '-movflags', '+faststart', '-vf', 'scale=1280:720' , videoPath]);
+
+        process.once('details', (details) => {
+          console.log(JSON.stringify(details));
+        });
+
+        process.on('progress', (progress) => {
+          progAmt = Math.round(33 + ((Number(progress.frame) / tFrames) *100) / 3);
+        });
+
+        process.once('end', (end) => {
+          // uploadToYoutube();
+          progMsg = 'Uploading to youtube';
+          progAmt = 66;
+          fs.unlink(audioPath, (err) => {
+            if (err) {
+              console.error(err)
+              return
+            }
+            //file removed
+          });
+          console.log.bind(console, 'Conversion finished and exited with code');
+        });
+
+        process.done(console.log);
+
+        await process.onDone();
+
+    })();
+
+
   });
 
   function uploadToYoutube() {
@@ -77,7 +107,7 @@ app.post('/upload', (req, res) => {
               // Video title and description
               snippet: {
                 title: title,
-                tags: ["cute", "asmr", "type beats"],
+                tags: tags,
                 description: desc
               }
               // I don't want to spam my subscribers
@@ -100,6 +130,7 @@ app.post('/upload', (req, res) => {
               console.log("fs error: " + err);
             }
             console.log("youtube done");
+            //delete audio and video
             process.exit();
           });
 
@@ -112,6 +143,12 @@ app.post('/upload', (req, res) => {
   }
 });
 
-
+// respond with "hello world" when a GET request is made to the homepage
+app.get('/progress', function (req, res) {
+  res.json({
+    progAmt: progAmt,
+    progMsg: progMsg
+  });
+});
 
 app.listen(5000, () => console.log('Server Started...'));

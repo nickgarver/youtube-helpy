@@ -8,7 +8,7 @@ import { faArrowUp, faCompactDisc, faRandom } from '@fortawesome/free-solid-svg-
 import { faYoutube } from '@fortawesome/free-brands-svg-icons'
 
 const FileUpload = () => {
-  let imgPick
+  let imgPick;
   const [file, setFile] = useState({});
   const [filename, setFilename] = useState('');
   const [title, setTitle] = useState(filename);
@@ -17,16 +17,16 @@ const FileUpload = () => {
   const [image, setImage] = useState("");
   const [color, setColor] = useState("rgba(255, 255, 255, 0.0");
   const [uploadedFile, setUploadedFile] = useState({});
-  const [message, setMessage] = useState('Audio uploading');
+  const [message, setMessage] = useState('Upload Initialized');
   const [dropped, setDropped] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [uploadPercentage, setUploadPercentage] = useState(0);
+  let progressRefresh;
 
   const { getRootProps, getInputProps, isDragActive, isDragReject} = useDropzone({
     maxFiles: 1, // number of files,
     accept: "audio/mpeg",
     onDropAccepted: (acceptedFile) => {
-      imgPick = Math.floor(Math.random() * 10) + 1;
       shuffleImage();
       setDropped(true);
       setFile(
@@ -43,6 +43,16 @@ const FileUpload = () => {
     },
   })
 
+  async function getProgress() {
+    try {
+      const response = await axios.get('/progress');
+      setUploadPercentage(response.data.progAmt);
+      setMessage(response.data.progMsg);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useLayoutEffect(() => {
     if(!isDragActive && !isDragReject) {
       setColor("rgba(255, 255, 255, 0.0"); //none
@@ -53,7 +63,13 @@ const FileUpload = () => {
     } else {
       setColor("rgba(239, 83, 79, 0.9"); //red
     }
-  }, [isDragActive] )
+  }, [isDragActive])
+
+  useLayoutEffect(() => {
+    if (uploadPercentage <= 66) {
+      clearInterval(progressRefresh);
+    }
+  }, [uploadPercentage])
 
   const shuffleImage = async e => {
     imgPick = Math.floor(Math.random() * 10) + 1;
@@ -61,16 +77,18 @@ const FileUpload = () => {
   }
 
   const onSubmit = async e => {
+    const fps = 25
+    const totalFrames = (document.getElementById("player").duration * fps) + 100 ;
     setSubmitted(true);
     e.preventDefault();
     const formData = new FormData();
     formData.append('file', file);
     formData.append('filename', filename);
     formData.append('title', title);
-    console.log(myTags);
-    // formData.append('tags', tags);
+    formData.append('tags', myTags);
     formData.append('desc', desc);
     formData.append('image', image);
+    formData.append('totalFrames', totalFrames);
 
     try {
       const res = await axios.post('/upload', formData, {
@@ -78,27 +96,27 @@ const FileUpload = () => {
           'Content-Type': 'multipart/form-data'
         },
         onUploadProgress: progressEvent => {
+          //start upload
+          setMessage('Audio Uploading')
           setUploadPercentage(
             parseInt(
-              Math.round((progressEvent.loaded * 100) / progressEvent.total)
+              Math.round(((progressEvent.loaded * 100) / progressEvent.total) / 3)
             )
           );
-
           // Clear percentage
-          setTimeout(() => setUploadPercentage(0), 10000);
+          // setTimeout(() => setUploadPercentage(0), 10000);
         }
       });
 
-      const { fileName, filePath } = res.data;
-
+      const { fileName, filePath} = res.data;
       setUploadedFile({ fileName, filePath });
+      //start timer
+      progressRefresh = setInterval(getProgress, 500);
 
-      setMessage('File Uploaded');
     } catch (err) {
       if (err.response.status === 500) {
         setMessage('There was a problem with the server');
       } else {
-        //ffmpeg then youtube here
         setMessage(err.response.data.msg);
       }
     }
@@ -154,7 +172,9 @@ const FileUpload = () => {
             </form>
           </Fragment>
           }
-          {submitted && <Progress percentage={uploadPercentage} message={message}/>}
+          {submitted && <Progress percentage={uploadPercentage} message={message}>
+          <a href="https://github.com/nickgarver">{message}</a>
+          </Progress>}
 
           {uploadedFile ? (
             <div>
