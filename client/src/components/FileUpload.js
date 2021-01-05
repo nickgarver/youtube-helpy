@@ -44,13 +44,9 @@ const FileUpload = () => {
   })
 
   async function getProgress() {
-    try {
-      const response = await axios.get('/progress');
-      setUploadPercentage(response.data.progAmt);
-      setMessage(response.data.progMsg);
-    } catch (error) {
-      console.error(error);
-    }
+      // const response = await axios.get('/progress');
+      // setUploadPercentage(response.data.progAmt);
+      // setMessage(response.data.progMsg);
   }
 
   useLayoutEffect(() => {
@@ -103,8 +99,6 @@ const FileUpload = () => {
               Math.round(((progressEvent.loaded * 100) / progressEvent.total) / 3)
             )
           );
-          // Clear percentage
-          // setTimeout(() => setUploadPercentage(0), 10000);
         }
       });
 
